@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "223116451012",
+    "project_id": "shazam-beb8c",
+    "storage_bucket": "shazam-beb8c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223116451012:android:ca216f1aa347de79907d91",
+        "android_client_info": {
+          "package_name": "com.example.mobile_dev_lab2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223116451012-g2ti0cj0nvoq0jp7u2mnkrbrpco37i6v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mobile_dev_lab2",
+            "certificate_hash": "3041b45ca407cbf2529e2510209720db904352db"
+          }
+        },
+        {
+          "client_id": "223116451012-knghp5ffv3elpm4tdtd4mbbfb03a9ual.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzXs_BUIgcrpzaBUn6vTUROB-ieGH61hI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223116451012-knghp5ffv3elpm4tdtd4mbbfb03a9ual.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
