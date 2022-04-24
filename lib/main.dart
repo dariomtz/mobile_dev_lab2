@@ -1,6 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_dev_lab2/auth/bloc/auth_bloc.dart';
+import 'package:mobile_dev_lab2/pages/home_page.dart';
+import 'package:mobile_dev_lab2/pages/login_page.dart';
+import 'package:mobile_dev_lab2/record/bloc/record_bloc.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+      create: (context) => AuthBloc()..add(VerifyAuthEvent()),
+    ),
+    BlocProvider(create: (context) => RecordBloc())
+  ], child: MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -9,78 +24,29 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.blueGrey[900],
+        primaryColor: Colors.purple,
+        primarySwatch: Colors.purple,
       ),
-      home: const Home(),
-    );
-  }
-}
-
-class Home extends StatelessWidget {
-  const Home({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Expanded(
-              child: Center(
-                  child: Text(
-            "Toque para escuchar",
-            style: TextStyle(color: Colors.white, fontSize: 17),
-          ))),
-          Expanded(
-            child: Ink(
-                decoration: const ShapeDecoration(
-                  color: Colors.white,
-                  shape: CircleBorder(),
-                ),
-                child: IconButton(
-                    iconSize: 150,
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.music_note,
-                      color: Colors.purple,
-                    ))),
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Ink(
-                    decoration: const ShapeDecoration(
-                        color: Colors.white, shape: CircleBorder()),
-                    child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                        )),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Ink(
-                    decoration: const ShapeDecoration(
-                        color: Colors.white, shape: CircleBorder()),
-                    child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.power_settings_new_sharp,
-                          color: Colors.black,
-                        )),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+      home: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Favor de autenticarse"),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is AuthSuccessState) {
+            return Home();
+          } else if (state is UnAuthState ||
+              state is AuthErrorState ||
+              state is SignOutSuccessState) {
+            return LoginPage();
+          }
+          return Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
