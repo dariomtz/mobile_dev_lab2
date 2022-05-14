@@ -10,3 +10,5 @@ abstract class RecordEvent extends Equatable {
 class StartRecordingEvent extends RecordEvent {}
 
 class StopRecordingEvent extends RecordEvent {}
+
+class CleanRecordingEvent extends RecordEvent {}

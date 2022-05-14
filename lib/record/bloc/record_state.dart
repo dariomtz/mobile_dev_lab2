@@ -14,12 +14,14 @@ class RecordLoading extends RecordState {}
 class Recording extends RecordState {}
 
 class RecordingFinished extends RecordState {
-  final String path;
+  final RecognizedSongData songData;
 
-  const RecordingFinished({required this.path});
+  const RecordingFinished({required this.songData});
 
   @override
-  List<Object> get props => [path];
+  List<Object> get props => [songData];
 }
+
+class RecordingFailedRecognition extends RecordState {}
 
 class RecordError extends RecordState {}

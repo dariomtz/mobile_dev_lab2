@@ -14,10 +14,12 @@ void main() async {
       create: (context) => AuthBloc()..add(VerifyAuthEvent()),
     ),
     BlocProvider(create: (context) => RecordBloc())
-  ], child: MyApp()));
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text("Favor de autenticarse"),
               ),
             );
@@ -39,13 +41,13 @@ class MyApp extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is AuthSuccessState) {
-            return Home();
+            return const Home();
           } else if (state is UnAuthState ||
               state is AuthErrorState ||
               state is SignOutSuccessState) {
-            return LoginPage();
+            return const LoginPage();
           }
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );

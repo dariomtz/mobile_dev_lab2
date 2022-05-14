@@ -10,6 +10,7 @@ class RecognizedSongData {
   final String appleLink;
   final String spotifyLink;
   final String deezerLink;
+  final String image;
 
   const RecognizedSongData({
     required this.artist,
@@ -20,6 +21,7 @@ class RecognizedSongData {
     required this.appleLink,
     required this.spotifyLink,
     required this.deezerLink,
+    required this.image,
   });
 
   RecognizedSongData.fromJson(json)
@@ -33,6 +35,8 @@ class RecognizedSongData {
           spotifyLink:
               json["result"]!["spotify"]["external_urls"]["spotify"] as String,
           deezerLink: json["result"]!["deezer"]["link"] as String,
+          image:
+              json["result"]!["spotify"]["album"]["images"][0]["url"] as String,
         );
 }
 
@@ -43,6 +47,7 @@ class FirebaseSong {
   final String album;
   final String releaseDate;
   final String link;
+  final String image;
 
   const FirebaseSong({
     required this.artist,
@@ -50,6 +55,7 @@ class FirebaseSong {
     required this.album,
     required this.releaseDate,
     required this.link,
+    required this.image,
   });
 
   FirebaseSong.fromJson(Map<String, dynamic> json)
@@ -59,6 +65,17 @@ class FirebaseSong {
           album: json["album"]!,
           releaseDate: json["releaseDate"]!,
           link: json["link"]!,
+          image: json["image"]!,
+        );
+
+  FirebaseSong.fromRecognizedSongData(RecognizedSongData songData)
+      : this(
+          artist: songData.artist,
+          title: songData.title,
+          album: songData.album,
+          releaseDate: songData.releaseDate,
+          link: songData.link,
+          image: songData.image,
         );
 
   Map<String, String> toJson() {
@@ -68,6 +85,7 @@ class FirebaseSong {
       'album': album,
       'releaseDate': releaseDate,
       'link': link,
+      'image': image,
     };
   }
 }

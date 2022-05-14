@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mobile_dev_lab2/data/song.dart';
 import 'package:mobile_dev_lab2/repositories/music_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -16,10 +18,14 @@ class RecordBloc extends Bloc<RecordEvent, RecordState> {
   RecordBloc() : super(RecordInitial()) {
     on<StartRecordingEvent>(startRecording);
     on<StopRecordingEvent>(stopRecording);
+    on<CleanRecordingEvent>(cleanRecording);
+  }
+
+  FutureOr<void> cleanRecording(event, emit) async {
+    emit(RecordInitial());
   }
 
   Future<void> startRecording(event, emit) async {
-    emit(RecordLoading());
     try {
       if (await recorder.hasPermission()) {
         Directory temp = await getTemporaryDirectory();
@@ -38,13 +44,21 @@ class RecordBloc extends Bloc<RecordEvent, RecordState> {
   }
 
   Future<void> stopRecording(event, emit) async {
-    emit(RecordLoading());
-    final String? path = await recorder.stop();
-    if (path == null) {
+    try {
+      emit(RecordLoading());
+      final String? path = await recorder.stop();
+      if (path == null) {
+        emit(RecordError());
+        return;
+      }
+      RecognizedSongData? songData = await musicRepo.recognizeSong(path);
+      if (songData != null) {
+        emit(RecordingFinished(songData: songData));
+      } else {
+        emit(RecordingFailedRecognition());
+      }
+    } catch (e) {
       emit(RecordError());
-    } else {
-      print(await musicRepo.recognizeSong(path));
-      emit(RecordingFinished(path: path));
     }
   }
 }

@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class UserAuthRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ["email"]);
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseAuth _authStatic = FirebaseAuth.instance;
 
   // true -> go home page
   // false -> go login page
@@ -25,10 +26,6 @@ class UserAuthRepository {
     final googleUser = await _googleSignIn.signIn();
     final googleAuth = await googleUser!.authentication;
 
-    print(">> User email:${googleUser.email}");
-    print(">> User name:${googleUser.displayName}");
-    print(">> User photo:${googleUser.photoUrl}");
-
     // credenciales de usuario autenticado con Google
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
@@ -39,14 +36,13 @@ class UserAuthRepository {
 
     // Extraer token**
     User user = authResult.user!;
-    final firebaseToken = await user.getIdToken();
-    print("user fcm token:${firebaseToken}");
+    await user.getIdToken();
 
     final userRepo = UserRepository();
     userRepo.upsertUser(user);
   }
 
-  String getCurrentUserID() {
-    return _auth.currentUser!.uid;
+  static String getCurrentUserID() {
+    return _authStatic.currentUser!.uid;
   }
 }
